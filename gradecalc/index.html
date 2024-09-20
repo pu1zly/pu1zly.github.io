@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator with PyScript</title>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 200px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 4px;
+            font-size: 1em;
+            width: 98%;
+        }
+        button {
+            padding: 10px;
+            font-size: 1em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result, .error {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Floyd Chavez'sGrade Calculator</h1>
+        <input type="number" id="prelim_grade" placeholder="Enter your Prelim grade (0-100)" required>
+        <button id="calculate-btn">Calculate for Passing (75)</button>
+        <button id="calculate-90-btn">Calculate for Dean's Lister</button>
+        <p id="result" class="result"></p>
+        <p id="error" class="error"></p>
+    </div>
+
+    <!-- PyScript Python Code -->
+    <py-script>
+        def calculate_required_grades(prelim_grade, target=75):
+            prelim_weight = 0.20
+            midterm_weight = 0.30
+            final_weight = 0.50
+
+            # Contribution of Prelim to the overall score
+            prelim_score = prelim_grade * prelim_weight
+
+            # Remaining score needed to achieve the passing grade
+            remaining_score = target - prelim_score
+
+            # Assume the same score for both Midterm and Final
+            midterm_grade = remaining_score / (midterm_weight + final_weight)
+            final_grade = midterm_grade  # For simplicity, assume they are equal
+
+            # Check if the grades are possible (must be between 0 and 100)
+            if midterm_grade > 100 or final_grade > 100:
+                return midterm_grade, final_grade, False  # Impossible to pass with these prelim grades
+            else:
+                return midterm_grade, final_grade, True
+
+        def display_result(target_grade):
+            try:
+                prelim_input = Element("prelim_grade").value
+                prelim_grade = float(prelim_input)
+
+                if prelim_grade < 0 or prelim_grade > 100:
+                    Element("error").element.innerHTML = "Please enter a valid grade between 0 and 100."
+                    Element("result").element.innerHTML = ""
+                else:
+                    required_midterm, required_final, possible_to_pass = calculate_required_grades(prelim_grade, target=target_grade)
+
+                    if possible_to_pass:
+                        result_message = f"To reach a grade of {target_grade}, you need at least {required_midterm:.2f} in the Midterm and {required_final:.2f} in the Final. You have a chance to pass."
+                        Element("result").element.innerHTML = result_message
+                        Element("error").element.innerHTML = ""
+                    else:
+                        result_message = f"The required grade for you to be a Deans Lister is {target_grade}, you need at least {required_midterm:.2f} in the Midterm and {required_final:.2f} in the Final. It may not be possible."
+                        Element("result").element.innerHTML = result_message
+                        Element("error").element.innerHTML = ""
+
+            except ValueError:
+                Element("error").element.innerHTML = "Invalid input! Please enter a numerical value."
+                Element("result").element.innerHTML = ""
+
+        # Bind the buttons to trigger the display_result function with different target grades
+        Element("calculate-btn").element.onclick = lambda evt: display_result(75)
+        Element("calculate-90-btn").element.onclick = lambda evt: display_result(90)
+
+    </py-script>
+
+</body>
+</html>
