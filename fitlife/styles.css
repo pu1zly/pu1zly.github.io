@@ -83,7 +83,7 @@ nav ul li a:hover {
     font-size: 1.2rem;
     font-family: "Inter Tight", sans-serif;
     font-optical-sizing: auto;
-    font-weight: <weight>;
+    font-weight: normal;
     font-style: normal;
 }
 
