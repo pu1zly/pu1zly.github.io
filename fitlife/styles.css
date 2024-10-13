@@ -81,7 +81,6 @@ nav ul li a:hover {
 
 .hero p {
     font-size: 1.2rem;
-    margin-bottom:
     font-family: "Inter Tight", sans-serif;
     font-optical-sizing: auto;
     font-weight: <weight>;
@@ -192,7 +191,6 @@ nav ul li a:hover {
 .image-container {
     display: flex;
     justify-content:center;
-    align-items: justify;
     
 }  
 
